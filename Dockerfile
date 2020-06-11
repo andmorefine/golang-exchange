@@ -1,7 +1,9 @@
 FROM golang:1.14.4
 
 LABEL maintainer "[golang app]"
-WORKDIR /go/src
+WORKDIR /go/src/work
+
+ADD . /go/src/work
 
 ENV GO111MODULE=on
 

@@ -1,10 +1,8 @@
 package main
 
-import "fmt"
-
-func init() {
-	fmt.Println("init")
-}
+import (
+	"fmt"
+)
 
 func main() {
 	fmt.Println("success")
