@@ -13,6 +13,7 @@ services:
       - ./db/mysql_data:/var/lib/mysql
   app:
     build: .
+    container_name: exchange_app
     tty: true
     volumes:
       - ./:/go/src
