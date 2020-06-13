@@ -17,7 +17,8 @@ func main() {
 	})
 	r.GET("/test", func(c *gin.Context) {
 		c.JSON(200, gin.H{
-			"test": "item",
+			"test":  "item",
+			"array": []int{1, 2, 3},
 		})
 	})
 	r.Run(":8080")
