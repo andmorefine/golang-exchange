@@ -5,10 +5,11 @@ WORKDIR /go/src
 
 COPY . .
 
-ADD . /go/src
-
 ENV GO111MODULE=on
 
 RUN go mod download
 
-EXPOSE 8080
+RUN go get github.com/pilu/fresh
+
+CMD ["fresh"]
+
