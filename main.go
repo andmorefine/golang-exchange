@@ -11,12 +11,13 @@ func main() {
 	r := gin.Default()
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
-			"message": "ping",
+			"message": "ok",
+			"age":     40,
 		})
 	})
-	r.GET("/mogemoge", func(c *gin.Context) {
+	r.GET("/test", func(c *gin.Context) {
 		c.JSON(200, gin.H{
-			"message": "mogetta",
+			"test": "item",
 		})
 	})
 	r.Run(":8080")
