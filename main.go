@@ -12,7 +12,11 @@ func main() {
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "ok",
-			"age":     40,
+		})
+	})
+	r.GET("/health_check", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"status": "ok",
 		})
 	})
 	r.GET("/test", func(c *gin.Context) {
