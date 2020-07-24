@@ -2,12 +2,13 @@ package models
 
 import (
 	"database/sql"
-	"fmt"
+	"log"
 	"time"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 // DbConnection *sql.DB
-var DbConnection *sql.DB
 
 // User struct
 type User struct {
@@ -36,33 +37,24 @@ func (c *User) TableName() string {
 
 // Create User.Create
 func (c *User) Create() error {
-	cmd := fmt.Sprintf("INSERT INTO %s (uuid, name, delete_flag, created_at, updated_at) VALUES (?, ?, ?, ?, ?)", c.TableName())
-	_, err := DbConnection.Exec(cmd, c.UUID, c.Name, c.DeleteFlag, c.CreatedAt.Format(time.RFC3339), c.UpdatedAt.Format(time.RFC3339))
+	db, err := sql.Open("mysql", "root:password@tcp(127.0.0.1:3336)/my_database")
+	ins, err := db.Prepare("INSERT INTO users (uuid, name, delete_flag, created_at, updated_at) VALUES (?, ?, ?, ?, ?)")
+	ins.Exec(c.UUID, c.Name, c.DeleteFlag, time.Now(), time.Now())
 	if err != nil {
+		log.Fatal(err)
 		return err
 	}
 	return err
 }
 
-// Save User.Save
-func (c *User) Save() error {
-	cmd := fmt.Sprintf("UPDATE %s SET uuid = ?, name = ?, delete_flag = ?, created_at = ?, updated_at = ? WHERE name = ?", c.TableName())
-	_, err := DbConnection.Exec(cmd, c.UUID, c.Name, c.DeleteFlag, c.CreatedAt.Format(time.RFC3339), c.UpdatedAt.Format(time.RFC3339), c.Name)
+// Update User.Update
+func (c *User) Update() error {
+	db, err := sql.Open("mysql", "root:password@tcp(127.0.0.1:3336)/my_database")
+	upd, err := db.Prepare("UPDATE users SET uuid = ?, name = ?, delete_flag = ?, updated_at = ? WHERE name = ?")
 	if err != nil {
+		log.Fatal(err)
 		return err
 	}
+	upd.Exec(c.UUID, c.Name, c.DeleteFlag, time.Now(), c.Name)
 	return err
-}
-
-// GetUser User.GetUser
-func (c User) GetUser(productCode string, duration time.Duration, dateTime time.Time) *User {
-	tableName := c.TableName()
-	cmd := fmt.Sprintf("SELECT uuid, name, delete_flag, created_at, updated_at FROM %s WHERE name = ?", tableName)
-	row := DbConnection.QueryRow(cmd, dateTime.Format(time.RFC3339))
-	var user User
-	err := row.Scan(&user.UUID, &user.Name, &user.DeleteFlag, &user.CreatedAt, &user.UpdatedAt)
-	if err != nil {
-		return nil
-	}
-	return NewUser(user.UUID, user.Name, user.DeleteFlag, user.CreatedAt, user.UpdatedAt)
 }

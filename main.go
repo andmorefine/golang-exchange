@@ -1,11 +1,13 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
+	"log"
 	"os"
 	"runtime/pprof"
 
-	"github.com/andmorefine/golang-exchenge/models"
+	_ "github.com/go-sql-driver/mysql"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,10 +18,15 @@ func main() {
 	pprof.StartCPUProfile(f)
 	defer pprof.StopCPUProfile()
 
+	// db 接続
+	db, err := sql.Open("mysql", "root:password@tcp(127.0.0.1:3336)/my_database?parseTime=true")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
 	fmt.Println("success")
 	r := gin.Default()
-	user := models.User{UUID: 1, Name: "moge"}
-	user.Create()
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "ok",
@@ -31,6 +38,8 @@ func main() {
 		})
 	})
 	r.GET("/test", func(c *gin.Context) {
+		// user := models.User{UUID: 1, Name: "moge", DeleteFlag: false}
+		// user.Create()
 		c.JSON(200, gin.H{
 			"test":  "item",
 			"array": []int{1, 2, 3, 4, 5},
