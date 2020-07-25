@@ -8,4 +8,5 @@ require (
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/rubenv/sql-migrate v0.0.0-20200616145509-8d140a17f351
 	golang.org/x/sys v0.0.0-20200722175500-76b94024e4b6 // indirect
+	gopkg.in/ini.v1 v1.57.0
 )
