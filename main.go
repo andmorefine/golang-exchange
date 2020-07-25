@@ -20,7 +20,11 @@ func main() {
 	defer pprof.StopCPUProfile()
 
 	// db 接続
-	db, err := sql.Open("mysql", "root:password@tcp(db_mysql5.7:3306)/my_database?parseTime=true")
+	db, err := sql.Open("mysql", "root:password@tcp(db_mysql5.7:3306)/my_database?parseTime=true&loc=Asia%2FTokyo")
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = db.Ping()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -41,11 +45,13 @@ func main() {
 	r.GET("/test", func(c *gin.Context) {
 		user := models.User{UUID: 1, Name: "moge", DeleteFlag: false}
 		result, _ := user.Create()
-		log.Println("result: ", result)
+		LastInsertId, _ := result.LastInsertId()
+		log.Println("LastInsertId: ", LastInsertId)
 		c.JSON(200, gin.H{
-			"test":  "item",
-			"array": []int{1, 2, 3, 4, 5},
-			"map":   map[string]int{"apple": 150, "banana": 300, "lemon": 300},
+			"LastInsertId": LastInsertId,
+			"test":         "item",
+			"array":        []int{1, 2, 3, 4, 5},
+			"map":          map[string]int{"apple": 150, "banana": 300, "lemon": 300},
 		})
 	})
 	r.Run(":8080")
