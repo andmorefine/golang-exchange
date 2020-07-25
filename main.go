@@ -7,6 +7,7 @@ import (
 	"os"
 	"runtime/pprof"
 
+	"github.com/andmorefine/golang-exchange/models"
 	_ "github.com/go-sql-driver/mysql"
 
 	"github.com/gin-gonic/gin"
@@ -19,7 +20,7 @@ func main() {
 	defer pprof.StopCPUProfile()
 
 	// db 接続
-	db, err := sql.Open("mysql", "root:password@tcp(127.0.0.1:3336)/my_database?parseTime=true")
+	db, err := sql.Open("mysql", "root:password@tcp(db_mysql5.7:3306)/my_database?parseTime=true")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -38,8 +39,9 @@ func main() {
 		})
 	})
 	r.GET("/test", func(c *gin.Context) {
-		// user := models.User{UUID: 1, Name: "moge", DeleteFlag: false}
-		// user.Create()
+		user := models.User{UUID: 1, Name: "moge", DeleteFlag: false}
+		result, _ := user.Create()
+		log.Println("result: ", result)
 		c.JSON(200, gin.H{
 			"test":  "item",
 			"array": []int{1, 2, 3, 4, 5},

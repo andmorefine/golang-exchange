@@ -8,6 +8,8 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+var layout = "2006-01-02 15:04:05"
+
 // DbConnection *sql.DB
 
 // User struct
@@ -36,20 +38,19 @@ func (c *User) TableName() string {
 }
 
 // Create User.Create
-func (c *User) Create() error {
-	db, err := sql.Open("mysql", "root:password@tcp(127.0.0.1:3336)/my_database")
+func (c *User) Create() (result sql.Result, err error) {
+	db, err := sql.Open("mysql", "root:password@tcp(db_mysql5.7:3306)/my_database?parseTime=true&loc=Asia%2FTokyo")
 	ins, err := db.Prepare("INSERT INTO users (uuid, name, delete_flag, created_at, updated_at) VALUES (?, ?, ?, ?, ?)")
-	ins.Exec(c.UUID, c.Name, c.DeleteFlag, time.Now(), time.Now())
+	result, err = ins.Exec(c.UUID, c.Name, c.DeleteFlag, time.Now(), time.Now())
 	if err != nil {
 		log.Fatal(err)
-		return err
 	}
-	return err
+	return result, err
 }
 
 // Update User.Update
 func (c *User) Update() error {
-	db, err := sql.Open("mysql", "root:password@tcp(127.0.0.1:3336)/my_database")
+	db, err := sql.Open("mysql", "root:password@tcp(db_mysql5.7:3306)/my_database?parseTime=true&loc=Asia%2FTokyo")
 	upd, err := db.Prepare("UPDATE users SET uuid = ?, name = ?, delete_flag = ?, updated_at = ? WHERE name = ?")
 	if err != nil {
 		log.Fatal(err)

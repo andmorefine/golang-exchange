@@ -21,3 +21,5 @@ tmp/
 .DS_Store
 
 test.profile
+
+application.log
